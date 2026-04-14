@@ -1,13 +1,12 @@
-I'll fix the code to ensure there are no JavaScript errors and the quiz works perfectly. The main issue was the `escapeHtml` function not handling all edge cases properly.
-
+Here is an HTML document that creates a drag-and-drop style quiz where students select the correct noun from a word bank displayed above each question.
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word Formation · Noun Suffixes | Typing Quiz</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+    <title>Word Formation · Noun Suffixes | Choose the Noun Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:opsz,wght@14..32,300;414;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -23,7 +22,7 @@ I'll fix the code to ensure there are no JavaScript errors and the quiz works pe
         }
 
         .exercise-container {
-            max-width: 950px;
+            max-width: 1000px;
             margin: 0 auto;
             background: #ffffff;
             border-radius: 32px;
@@ -63,58 +62,69 @@ I'll fix the code to ensure there are no JavaScript errors and the quiz works pe
             background: #fefcf8;
         }
 
+        /* question card */
         .question-card {
             background: #ffffff;
             border-radius: 24px;
-            padding: 20px 24px;
-            margin-bottom: 24px;
-            border: 1px solid #e8ece5;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            padding: 22px 26px;
+            margin-bottom: 28px;
+            border: 1px solid #e2e8e0;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
             transition: all 0.2s;
         }
 
         .question-card:hover {
-            border-color: #cfd9cf;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
+            border-color: #cbdcd0;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
         }
 
-        .combo-badge {
-            background: #f2f5ef;
-            border-radius: 40px;
-            padding: 6px 18px;
+        /* word + suffix display (above question) */
+        .word-suffix-panel {
+            background: #f4f7f2;
+            border-radius: 60px;
+            padding: 10px 20px;
+            margin-bottom: 20px;
             display: inline-flex;
+            flex-wrap: wrap;
             align-items: baseline;
             gap: 12px;
-            margin-bottom: 18px;
-            flex-wrap: wrap;
-            font-size: 14px;
-            border: 1px solid #dee5db;
+            border: 1px solid #dde5d9;
         }
 
-        .root-word {
+        .word-badge {
             background: #2c5a5a;
             color: white;
-            padding: 5px 14px;
-            border-radius: 30px;
-            font-weight: 600;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 16px;
             font-family: 'Inter', monospace;
-            font-size: 15px;
             letter-spacing: 0.3px;
         }
 
-        .suffix-part {
+        .suffix-badge {
             background: #b8a9c9;
             color: #2c2f3e;
-            padding: 5px 14px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 15px;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 16px;
         }
 
-        .formula-arrow {
-            font-size: 18px;
-            font-weight: 500;
-            color: #7c8f7c;
+        .arrow-icon {
+            font-size: 20px;
+            font-weight: 600;
+            color: #6b856b;
+        }
+
+        .noun-target {
+            background: #e8efe4;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #4a6741;
+            font-style: italic;
         }
 
         .sentence-text {
@@ -123,72 +133,75 @@ I'll fix the code to ensure there are no JavaScript errors and the quiz works pe
             color: #1e2f2f;
             margin-bottom: 20px;
             font-weight: 500;
-            background: #fefcf5;
-            padding: 6px 0;
+            background: #fefcf8;
+            padding: 8px 0;
         }
 
-        .answer-area {
+        /* answer choices area */
+        .choices-area {
+            margin-top: 16px;
             display: flex;
             flex-wrap: wrap;
+            gap: 12px;
             align-items: center;
-            gap: 16px;
-            margin-top: 8px;
         }
 
-        .input-group {
-            flex: 2;
-            min-width: 200px;
-        }
-
-        .answer-input {
-            width: 100%;
-            padding: 12px 18px;
-            font-size: 15px;
-            font-family: 'Inter', monospace;
-            border: 1.5px solid #d4dfd4;
-            border-radius: 60px;
+        .choice-btn {
             background: white;
-            transition: 0.2s;
+            border: 1.5px solid #cbdcd0;
+            border-radius: 60px;
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: 600;
             color: #1c4d4d;
-            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: 'Inter', monospace;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
         }
 
-        .answer-input:focus {
-            outline: none;
+        .choice-btn:hover {
+            background: #e6f0e6;
+            border-color: #8faa8a;
+            transform: translateY(-1px);
+        }
+
+        .choice-btn.selected-choice {
+            background: #2c5a5a;
             border-color: #2c5a5a;
-            box-shadow: 0 0 0 3px rgba(44, 90, 90, 0.1);
+            color: white;
+            box-shadow: 0 2px 6px rgba(44,90,90,0.2);
         }
 
-        .answer-input.correct-input {
-            border-color: #3b8b3b;
-            background: #f0f9f0;
+        .reset-choice {
+            background: none;
+            border: none;
+            color: #b67e55;
+            font-size: 13px;
+            cursor: pointer;
+            margin-left: 8px;
+            font-weight: 500;
+            text-decoration: underline;
         }
 
-        .answer-input.wrong-input {
-            border-color: #c23b2b;
-            background: #fff5f4;
+        .reset-choice:hover {
+            color: #8b5a3a;
         }
 
-        .status-icon {
-            font-size: 24px;
-            min-width: 36px;
-            text-align: center;
+        .status-indicator {
+            margin-left: 12px;
+            font-size: 20px;
+            display: inline-block;
         }
 
-        .feedback-inline {
+        .feedback-row {
+            margin-top: 12px;
             font-size: 12px;
-            margin-top: 8px;
-            padding-left: 16px;
-            color: #6f836f;
+            color: #6f8a6f;
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .hint-text {
-            font-size: 12px;
-            color: #9baf9b;
-            font-style: italic;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .action-bar {
@@ -204,7 +217,7 @@ I'll fix the code to ensure there are no JavaScript errors and the quiz works pe
 
         .btn-group {
             display: flex;
-            gap: 12px;
+            gap: 14px;
         }
 
         .btn {
@@ -261,8 +274,8 @@ I'll fix the code to ensure there are no JavaScript errors and the quiz works pe
         .score-badge {
             background: #2c5a5a10;
             border-radius: 60px;
-            padding: 8px 20px;
-            font-weight: 600;
+            padding: 8px 22px;
+            font-weight: 700;
             font-size: 15px;
             color: #2c5a5a;
         }
@@ -271,20 +284,21 @@ I'll fix the code to ensure there are no JavaScript errors and the quiz works pe
             font-size: 12px;
             color: #8fa08f;
             text-align: center;
-            margin-top: 18px;
+            margin-top: 20px;
             font-style: italic;
         }
 
-        @media (max-width: 650px) {
+        @media (max-width: 680px) {
             .quiz-box {
                 padding: 20px;
             }
-            .combo-badge {
-                font-size: 12px;
-            }
-            .answer-input {
+            .word-badge, .suffix-badge {
                 font-size: 13px;
-                padding: 10px 14px;
+                padding: 4px 14px;
+            }
+            .choice-btn {
+                padding: 6px 14px;
+                font-size: 12px;
             }
         }
     </style>
@@ -292,199 +306,103 @@ I'll fix the code to ensure there are no JavaScript errors and the quiz works pe
 <body>
 <div class="exercise-container">
     <div class="header">
-        <h1>✍️ word formation · <span>noun suffixes</span></h1>
-        <div class="sub">Type the correct noun formed from the given word + suffix. Watch spelling changes!</div>
+        <h1>📖 word formation · <span>noun suffixes</span></h1>
+        <div class="sub">For each question: combine the word + suffix, then choose the correct noun from the list below.</div>
     </div>
     <div class="quiz-box" id="quizRoot"></div>
 </div>
 
 <script>
-    // Questions data with root word, suffix, and correct noun form
+    // ---------- DATA ----------
+    // Each question: root word, suffix, correct noun, sentence
     const questionsData = [
         {
-            text: "The firefighter received an award for her ______.",
             root: "brave",
             suffix: "-ery",
             correctAnswer: "bravery",
-            hint: "brave + ery → drop 'e' + add ery → bravery"
+            sentence: "The firefighter received an award for her ______.",
+            hint: "brave → drop 'e' + ery = bravery"
         },
         {
-            text: "People usually work better if they are given ______.",
             root: "encourage",
             suffix: "-ment",
             correctAnswer: "encouragement",
-            hint: "encourage + ment → encouragement (keep the 'e')"
+            sentence: "People usually work better if they are given ______.",
+            hint: "encourage + ment = encouragement"
         },
         {
-            text: "He has a lot of ______ in the subject, but doesn't work very hard.",
             root: "able",
             suffix: "-ity",
             correctAnswer: "ability",
-            hint: "able + ity → ability (able → abil + ity)"
+            sentence: "He has a lot of ______ in the subject, but doesn't work very hard.",
+            hint: "able → abil + ity = ability"
         },
         {
-            text: "A: Thank you for your ______.<br>B: I was glad to help.",
             root: "assist",
             suffix: "-ance",
             correctAnswer: "assistance",
-            hint: "assist + ance → assistance"
+            sentence: "A: Thank you for your ______.<br>B: I was glad to help.",
+            hint: "assist + ance = assistance"
         },
         {
-            text: "I dream of being a pop star, but in ______ I know it isn't very likely.",
             root: "real",
             suffix: "-ity",
             correctAnswer: "reality",
-            hint: "real + ity → reality"
+            sentence: "I dream of being a pop star, but in ______ I know it isn't very likely.",
+            hint: "real + ity = reality"
         },
         {
-            text: "Older people have greater ______ because of their life experience.",
             root: "wise",
             suffix: "-dom",
             correctAnswer: "wisdom",
-            hint: "wise + dom → wisdom (wise → wis + dom)"
+            sentence: "Older people have greater ______ because of their life experience.",
+            hint: "wise → wis + dom = wisdom"
         }
     ];
 
-    let userAnswers = [];
-    let validationStatus = [];
+    // For each question: store selected answer (string) or null
+    let selections = [];
+    // Track correctness for live UI
+    let correctness = [];
+
+    // Build the complete list of possible answer nouns (all correct answers)
+    let allNounOptions = [];
 
     function initState() {
-        userAnswers = questionsData.map(() => "");
-        validationStatus = questionsData.map(() => false);
+        selections = new Array(questionsData.length).fill(null);
+        correctness = new Array(questionsData.length).fill(false);
+        // Extract unique correct nouns (all distinct in this set)
+        allNounOptions = questionsData.map(q => q.correctAnswer);
+        // Shuffle options globally for variety but preserve list
+        allNounOptions = shuffleArray([...allNounOptions]);
     }
 
-    function isAnswerCorrect(idx, answerValue) {
-        const correct = questionsData[idx].correctAnswer;
-        if (!answerValue || answerValue.trim() === "") return false;
-        return answerValue.trim().toLowerCase() === correct.toLowerCase();
-    }
-
-    function updateValidationStatus(idx) {
-        validationStatus[idx] = isAnswerCorrect(idx, userAnswers[idx]);
-    }
-
-    function escapeHtml(str) {
-        if (!str) return "";
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    function updateSingleQuestionUI(idx) {
-        const inputField = document.getElementById(`input_${idx}`);
-        const statusSpan = document.getElementById(`status_${idx}`);
-        const currentAnswer = userAnswers[idx] || "";
-        const isValid = validationStatus[idx];
-        
-        if (inputField) {
-            if (inputField.value !== currentAnswer) {
-                inputField.value = currentAnswer;
-            }
-            inputField.classList.remove('correct-input', 'wrong-input');
-            if (isValid) {
-                inputField.classList.add('correct-input');
-            } else if (currentAnswer !== "") {
-                inputField.classList.add('wrong-input');
-            }
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
         }
-        
-        if (statusSpan) {
-            if (isValid) {
-                statusSpan.textContent = "✅";
-            } else if (currentAnswer !== "") {
-                statusSpan.textContent = "❌";
-            } else {
-                statusSpan.textContent = "⚪";
-            }
-        }
-        
-        updateScoreDisplay();
+        return arr;
     }
 
-    function updateScoreDisplay() {
-        const scoreSpan = document.getElementById('scoreDisplay');
-        if (scoreSpan) {
-            const score = validationStatus.filter(v => v === true).length;
-            const total = questionsData.length;
-            scoreSpan.innerHTML = `⭐ Score: ${score}/${total}`;
-        }
+    // update correctness for a specific index
+    function updateCorrectness(idx) {
+        const selected = selections[idx];
+        correctness[idx] = (selected !== null && selected === questionsData[idx].correctAnswer);
     }
 
-    function clearGlobalFeedback() {
-        const globalFb = document.getElementById('globalFeedback');
-        if (globalFb) {
-            globalFb.innerHTML = '';
-            globalFb.className = 'global-feedback';
-        }
-    }
-
-    function checkAllAnswers() {
+    function updateAllCorrectness() {
         for (let i = 0; i < questionsData.length; i++) {
-            updateValidationStatus(i);
-            updateSingleQuestionUI(i);
-        }
-        
-        const allCorrect = validationStatus.every(v => v === true);
-        const totalCorrect = validationStatus.filter(v => v === true).length;
-        const total = questionsData.length;
-        
-        const globalFb = document.getElementById('globalFeedback');
-        if (!globalFb) return;
-        
-        if (allCorrect) {
-            globalFb.innerHTML = `🎉 Perfect! ${totalCorrect}/${total} correct. All nouns are formed correctly. Great suffix skills! 🎉`;
-            globalFb.className = 'global-feedback correct';
-        } else {
-            let wrongList = [];
-            for (let i = 0; i < questionsData.length; i++) {
-                if (!validationStatus[i]) {
-                    const userAns = userAnswers[i] || "(empty)";
-                    const expected = questionsData[i].correctAnswer;
-                    wrongList.push(`${i+1}. “${userAns}” → correct: “${expected}”`);
-                }
-            }
-            const wrongMsg = `⚠️ ${totalCorrect}/${total} correct.<br><br>Check these:<br> ${wrongList.join('<br>')}<br><br>💡 Remember spelling changes!`;
-            globalFb.innerHTML = wrongMsg;
-            globalFb.className = 'global-feedback wrong';
-        }
-        globalFb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-
-    function resetAllFields() {
-        userAnswers = questionsData.map(() => "");
-        validationStatus = questionsData.map(() => false);
-        
-        for (let i = 0; i < questionsData.length; i++) {
-            const inputField = document.getElementById(`input_${i}`);
-            if (inputField) {
-                inputField.value = "";
-                inputField.classList.remove('correct-input', 'wrong-input');
-            }
-            const statusSpan = document.getElementById(`status_${i}`);
-            if (statusSpan) {
-                statusSpan.textContent = "⚪";
-            }
-        }
-        
-        updateScoreDisplay();
-        clearGlobalFeedback();
-        
-        const globalFb = document.getElementById('globalFeedback');
-        if (globalFb) {
-            globalFb.innerHTML = "🔄 All answers cleared. Type the correct noun forms!";
-            globalFb.className = 'global-feedback';
-            setTimeout(() => {
-                if (globalFb && globalFb.innerHTML === "🔄 All answers cleared. Type the correct noun forms!") {
-                    globalFb.innerHTML = '';
-                    globalFb.className = 'global-feedback';
-                }
-            }, 2000);
+            updateCorrectness(i);
         }
     }
 
+    // compute current score
+    function computeScore() {
+        return correctness.filter(v => v === true).length;
+    }
+
+    // Render entire quiz
     function renderQuiz() {
         const root = document.getElementById('quizRoot');
         if (!root) return;
@@ -493,97 +411,228 @@ I'll fix the code to ensure there are no JavaScript errors and the quiz works pe
 
         for (let i = 0; i < questionsData.length; i++) {
             const q = questionsData[i];
-            const currentAnswer = userAnswers[i] || "";
-            const isValid = validationStatus[i];
-            const inputClass = isValid ? "correct-input" : (currentAnswer !== "" ? "wrong-input" : "");
+            const selectedVal = selections[i];
+            const isCorrect = correctness[i];
+            
+            // Build status icon
+            let statusIcon = "";
+            if (selectedVal === null) {
+                statusIcon = "⚪";
+            } else if (isCorrect) {
+                statusIcon = "✅";
+            } else {
+                statusIcon = "❌";
+            }
+
+            // Determine current selected text for display
+            const selectedDisplay = selectedVal ? selectedVal : "Not chosen";
             
             html += `
-                <div class="question-card" data-qidx="${i}">
-                    <div class="combo-badge">
-                        <span class="root-word">📖 ${escapeHtml(q.root)}</span>
-                        <span class="formula-arrow">+</span>
-                        <span class="suffix-part">${escapeHtml(q.suffix)}</span>
-                        <span class="formula-arrow">→</span>
-                        <span style="font-size:13px; color:#4a6a6a; font-weight:500;">noun form</span>
+                <div class="question-card" data-qid="${i}">
+                    <!-- word + suffix displayed prominently ABOVE the sentence -->
+                    <div class="word-suffix-panel">
+                        <span class="word-badge">📖 ${escapeHtml(q.root)}</span>
+                        <span class="arrow-icon">+</span>
+                        <span class="suffix-badge">${escapeHtml(q.suffix)}</span>
+                        <span class="arrow-icon">→</span>
+                        <span class="noun-target">noun form</span>
                     </div>
-                    <div class="sentence-text">${q.text}</div>
-                    <div class="answer-area">
-                        <div class="input-group">
-                            <input type="text" class="answer-input ${inputClass}" 
-                                   id="input_${i}" 
-                                   placeholder="Type the noun here..." 
-                                   value="${escapeHtml(currentAnswer)}"
-                                   autocomplete="off">
-                        </div>
-                        <div class="status-icon" id="status_${i}">
-                            ${isValid ? "✅" : (currentAnswer !== "" ? "❌" : "⚪")}
-                        </div>
+                    
+                    <div class="sentence-text">${q.sentence}</div>
+                    
+                    <!-- dynamic choice buttons (all possible nouns) -->
+                    <div class="choices-area" id="choices-area-${i}">
+                        ${renderChoiceButtons(i, selectedVal)}
                     </div>
-                    <div class="feedback-inline">
+                    
+                    <div class="feedback-row">
+                        <span class="status-indicator">${statusIcon}</span>
                         <span class="hint-text">💡 ${escapeHtml(q.hint)}</span>
+                        ${selectedVal ? `<button class="reset-choice" data-reset-idx="${i}">✖ clear</button>` : ''}
                     </div>
                 </div>
             `;
         }
-        
-        const score = validationStatus.filter(v => v === true).length;
+
+        const currentScore = computeScore();
         const total = questionsData.length;
         
         html += `
             <div class="action-bar">
-                <div class="score-badge" id="scoreDisplay">⭐ Score: ${score}/${total}</div>
+                <div class="score-badge" id="scoreDisplay">🏆 Score: ${currentScore}/${total}</div>
                 <div class="btn-group">
-                    <button class="btn" id="checkAllBtn">✓ Check all answers</button>
-                    <button class="btn btn-secondary" id="resetAllBtn">⟳ Reset all fields</button>
+                    <button class="btn" id="checkAnswersBtn">✓ Check answers</button>
+                    <button class="btn btn-secondary" id="resetAllBtn">⟳ Reset all</button>
                 </div>
             </div>
             <div id="globalFeedback" class="global-feedback"></div>
             <div class="small-note">
-                ✨ Type the complete noun. Pay attention to spelling changes (drop 'e', change y to i, etc.)
+                ✨ Click any noun below a question to select it. The word + suffix are shown above each sentence. Choose the correct noun form.
             </div>
         </div>`;
 
         root.innerHTML = html;
-
-        // Attach event listeners to inputs
+        
+        // attach dynamic event listeners for choice buttons & clear buttons
         for (let i = 0; i < questionsData.length; i++) {
-            const inputElem = document.getElementById(`input_${i}`);
-            if (inputElem) {
-                inputElem.addEventListener('input', (function(index) {
-                    return function(e) {
-                        userAnswers[index] = e.target.value;
-                        updateValidationStatus(index);
-                        updateSingleQuestionUI(index);
-                        clearGlobalFeedback();
-                    };
-                })(i));
+            const container = document.getElementById(`choices-area-${i}`);
+            if (container) {
+                const buttons = container.querySelectorAll('.choice-btn');
+                buttons.forEach(btn => {
+                    btn.removeEventListener('click', handleChoiceClick);
+                    btn.addEventListener('click', handleChoiceClick);
+                });
+            }
+            // clear button for this question
+            const clearBtn = document.querySelector(`.reset-choice[data-reset-idx="${i}"]`);
+            if (clearBtn) {
+                clearBtn.removeEventListener('click', handleClearClick);
+                clearBtn.addEventListener('click', handleClearClick);
             }
         }
-
-        // Attach button listeners
-        const checkBtn = document.getElementById('checkAllBtn');
-        const resetBtn = document.getElementById('resetAllBtn');
         
-        if (checkBtn) {
-            checkBtn.addEventListener('click', checkAllAnswers);
+        // attach global buttons
+        const checkBtn = document.getElementById('checkAnswersBtn');
+        const resetAllBtn = document.getElementById('resetAllBtn');
+        if (checkBtn) checkBtn.addEventListener('click', () => checkAllAnswers());
+        if (resetAllBtn) resetAllBtn.addEventListener('click', () => resetAllSelections());
+    }
+    
+    // render choice buttons for a specific question, highlight selected if matches
+    function renderChoiceButtons(questionIdx, selectedValue) {
+        // Use the global shuffled noun options (all correct nouns)
+        // but we also show them as possible answers; student must pick the correct one.
+        // This gives a selection from all possible correct answers but only one matches the current root+suffix.
+        const options = allNounOptions;
+        let buttonsHtml = '';
+        for (let opt of options) {
+            const isSelected = (selectedValue === opt);
+            const selectedClass = isSelected ? 'selected-choice' : '';
+            buttonsHtml += `<button class="choice-btn ${selectedClass}" data-qidx="${questionIdx}" data-noun="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`;
         }
-        if (resetBtn) {
-            resetBtn.addEventListener('click', resetAllFields);
+        return buttonsHtml;
+    }
+    
+    // handle click on a noun choice
+    function handleChoiceClick(e) {
+        const btn = e.currentTarget;
+        const qIdx = parseInt(btn.getAttribute('data-qidx'));
+        const nounValue = btn.getAttribute('data-noun');
+        if (isNaN(qIdx)) return;
+        
+        // update selection for that question
+        selections[qIdx] = nounValue;
+        updateCorrectness(qIdx);
+        
+        // re-render entire quiz to reflect updated selection + clear buttons and highlights
+        renderQuiz();
+        
+        // optional: brief inline feedback
+        showTemporaryFeedback(`Selected "${nounValue}" for question ${qIdx+1}.`, true);
+    }
+    
+    // handle clear (reset specific question)
+    function handleClearClick(e) {
+        const btn = e.currentTarget;
+        const qIdx = parseInt(btn.getAttribute('data-reset-idx'));
+        if (isNaN(qIdx)) return;
+        
+        selections[qIdx] = null;
+        updateCorrectness(qIdx);
+        renderQuiz();
+        showTemporaryFeedback(`Cleared answer for question ${qIdx+1}.`, false);
+    }
+    
+    function resetAllSelections() {
+        selections = new Array(questionsData.length).fill(null);
+        updateAllCorrectness();
+        renderQuiz();
+        const fbDiv = document.getElementById('globalFeedback');
+        if (fbDiv) {
+            fbDiv.innerHTML = "🔄 All answers have been cleared. Choose nouns from the options!";
+            fbDiv.className = 'global-feedback';
+            setTimeout(() => {
+                if (fbDiv) fbDiv.innerHTML = '';
+            }, 2000);
+        } else {
+            showTemporaryFeedback("All answers cleared", false);
         }
     }
-
-    // Initialize and render
+    
+    function checkAllAnswers() {
+        // force re-evaluate correctness
+        updateAllCorrectness();
+        // re-render to ensure icons are updated
+        renderQuiz();
+        
+        const totalCorrect = computeScore();
+        const total = questionsData.length;
+        const allCorrect = (totalCorrect === total);
+        
+        const fbDiv = document.getElementById('globalFeedback');
+        if (!fbDiv) return;
+        
+        if (allCorrect) {
+            fbDiv.innerHTML = `🎉 EXCELLENT! ${totalCorrect}/${total} correct. Perfect noun formation! 🎉`;
+            fbDiv.className = 'global-feedback correct';
+        } else {
+            // build detailed wrong list
+            let wrongItems = [];
+            for (let i = 0; i < questionsData.length; i++) {
+                const selected = selections[i];
+                const correctAns = questionsData[i].correctAnswer;
+                if (!correctness[i]) {
+                    const userShow = selected ? `"${selected}"` : "(no answer)";
+                    wrongItems.push(`${i+1}. ${userShow} → correct: “${correctAns}” (${questionsData[i].root} + ${questionsData[i].suffix})`);
+                }
+            }
+            const wrongMsg = `⚠️ Score: ${totalCorrect}/${total}.<br><br>${wrongItems.join('<br>')}<br><br>💡 Look at the word + suffix above each sentence and pick the right noun.`;
+            fbDiv.innerHTML = wrongMsg;
+            fbDiv.className = 'global-feedback wrong';
+        }
+        fbDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    
+    let timeoutId = null;
+    function showTemporaryFeedback(msg, isSuccess) {
+        let fbDiv = document.getElementById('globalFeedback');
+        if (!fbDiv) {
+            // fallback create if missing? but it exists
+            return;
+        }
+        fbDiv.innerHTML = msg;
+        fbDiv.className = 'global-feedback';
+        if (isSuccess) fbDiv.classList.add('correct');
+        else fbDiv.classList.add('wrong');
+        if (timeoutId) clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            if (fbDiv && fbDiv.innerHTML === msg) {
+                fbDiv.innerHTML = '';
+                fbDiv.className = 'global-feedback';
+            }
+        }, 1800);
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    // initial shuffle of options and state
     initState();
     renderQuiz();
-
-    // Add Enter key support
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('answer-input')) {
-            e.preventDefault();
-            const checkBtn = document.getElementById('checkAllBtn');
-            if (checkBtn) checkBtn.click();
-        }
-    });
+    
+    // Additional guard: if any double event binding, fine.
+    // Ensure that the noun options are shown exactly for each question (same pool)
+    // This fulfills "Show all words and suffixes above each questions so we will choose"
+    // All possible noun answers are displayed as clickable buttons under each question.
+    // The student sees root + suffix clearly above the sentence.
+    console.log("Quiz ready: Each question displays its specific word + suffix, and all possible noun choices are shown below.");
 </script>
 </body>
 </html>
